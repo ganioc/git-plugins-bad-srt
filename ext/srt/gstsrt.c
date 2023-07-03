@@ -34,10 +34,11 @@ GST_DEBUG_CATEGORY (GST_CAT_DEFAULT);
 
 SRTSOCKET
 gst_srt_client_connect_full (GstElement * elem, int sender,
-    const gchar * host, guint16 port, int rendez_vous,
-    const gchar * bind_address, guint16 bind_port, int latency,
-    GSocketAddress ** socket_address, gint * poll_id, gchar * passphrase,
-    int key_length)
+    const gchar * host, guint16 port,
+    int rendez_vous, const gchar * bind_address,
+    guint16 bind_port, int latency,
+    GSocketAddress ** socket_address, gint * poll_id,
+    gchar * passphrase, int key_length)
 {
   SRTSOCKET sock = SRT_INVALID_SOCK;
   GError *error = NULL;
@@ -66,8 +67,8 @@ gst_srt_client_connect_full (GstElement * elem, int sender,
     goto failed;
   }
 
-  sock = srt_socket (g_socket_address_get_family (*socket_address), SOCK_DGRAM,
-      0);
+  sock =
+      srt_socket (g_socket_address_get_family (*socket_address), SOCK_DGRAM, 0);
   if (sock == SRT_ERROR) {
     GST_ELEMENT_ERROR (elem, LIBRARY, INIT, (NULL),
         ("failed to create SRT socket (reason: %s)", srt_getlasterror_str ()));
@@ -76,7 +77,8 @@ gst_srt_client_connect_full (GstElement * elem, int sender,
 
   /* Make sure TSBPD mode is enable (SRT mode) */
   srt_setsockopt (sock, 0, SRTO_TSBPDMODE, &(int) {
-      1}, sizeof (int));
+        1
+      }, sizeof (int));
 
   /* This is a sink, we're always a receiver */
   srt_setsockopt (sock, 0, SRTO_SENDER, &sender, sizeof (int));
@@ -84,6 +86,9 @@ gst_srt_client_connect_full (GstElement * elem, int sender,
   srt_setsockopt (sock, 0, SRTO_TSBPDDELAY, &latency, sizeof (int));
 
   srt_setsockopt (sock, 0, SRTO_RENDEZVOUS, &rendez_vous, sizeof (int));
+
+  /* add by yango */
+  srt_setsockopt (sock, 0, SRTO_STREAMID, "live/live1", 10);
 
   if (passphrase != NULL && passphrase[0] != '\0') {
     srt_setsockopt (sock, 0, SRTO_PASSPHRASE, passphrase, strlen (passphrase));
@@ -105,7 +110,8 @@ gst_srt_client_connect_full (GstElement * elem, int sender,
         bind_port);
 
     if (b_socket_address == NULL) {
-      GST_ELEMENT_ERROR (elem, RESOURCE, OPEN_READ, ("Invalid bind address"),
+      GST_ELEMENT_ERROR (elem, RESOURCE, OPEN_READ,
+          ("Invalid bind address"),
           ("Failed to parse bind address: %s:%d", bind_address, bind_port));
       goto failed;
     }
@@ -113,7 +119,8 @@ gst_srt_client_connect_full (GstElement * elem, int sender,
     bsa_len = g_socket_address_get_native_size (b_socket_address);
     bsa = g_alloca (bsa_len);
     if (!g_socket_address_to_native (b_socket_address, bsa, bsa_len, &error)) {
-      GST_ELEMENT_ERROR (elem, RESOURCE, OPEN_READ, ("Invalid bind address"),
+      GST_ELEMENT_ERROR (elem, RESOURCE, OPEN_READ,
+          ("Invalid bind address"),
           ("Can't parse bind address to sockaddr: %s", error->message));
       g_clear_object (&b_socket_address);
       goto failed;
@@ -123,8 +130,8 @@ gst_srt_client_connect_full (GstElement * elem, int sender,
     if (srt_bind (sock, bsa, bsa_len) == SRT_ERROR) {
       GST_ELEMENT_ERROR (elem, RESOURCE, OPEN_READ,
           ("Can't bind to address"),
-          ("Can't bind to %s:%d (reason: %s)", bind_address, bind_port,
-              srt_getlasterror_str ()));
+          ("Can't bind to %s:%d (reason: %s)",
+              bind_address, bind_port, srt_getlasterror_str ()));
       goto failed;
     }
   }
@@ -138,7 +145,8 @@ gst_srt_client_connect_full (GstElement * elem, int sender,
   }
 
   srt_epoll_add_usock (*poll_id, sock, &(int) {
-      SRT_EPOLL_OUT});
+        SRT_EPOLL_OUT
+      });
 
   if (srt_connect (sock, sa, sa_len) == SRT_ERROR) {
     GST_ELEMENT_ERROR (elem, RESOURCE, OPEN_READ, ("Connection error"),
@@ -168,12 +176,12 @@ failed:
 SRTSOCKET
 gst_srt_client_connect (GstElement * elem, int sender,
     const gchar * host, guint16 port, int rendez_vous,
-    const gchar * bind_address, guint16 bind_port, int latency,
-    GSocketAddress ** socket_address, gint * poll_id)
+    const gchar * bind_address, guint16 bind_port,
+    int latency, GSocketAddress ** socket_address, gint * poll_id)
 {
   return gst_srt_client_connect_full (elem, sender, host, port,
-      rendez_vous, bind_address, bind_port, latency, socket_address, poll_id,
-      NULL, 0);
+      rendez_vous, bind_address, bind_port,
+      latency, socket_address, poll_id, NULL, 0);
 }
 
 static gboolean
