@@ -160,6 +160,7 @@ gst_srt_client_sink_set_property (GObject * object,
       // {
       //   g_free(priv->streamid);
       // }
+      g_free (priv->streamid);
       priv->streamid = g_value_dup_string (value);
       break;
     default:
