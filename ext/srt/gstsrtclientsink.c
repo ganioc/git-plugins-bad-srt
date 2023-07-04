@@ -70,6 +70,9 @@ struct _GstSRTClientSinkPrivate
   guint16 bind_port;
 
   gboolean sent_headers;
+
+  /* add by yango */
+  gchar *streamid;
 };
 
 #define GST_SRT_CLIENT_SINK_GET_PRIVATE(obj)  \
@@ -82,6 +85,8 @@ enum
   PROP_BIND_PORT,
   PROP_RENDEZ_VOUS,
   PROP_STATS,
+  /* add by yango */
+  PROP_STREAMID,
   /*< private > */
   PROP_LAST
 };
@@ -265,6 +270,12 @@ gst_srt_client_sink_class_init (GstSRTClientSinkClass * klass)
   properties[PROP_STATS] = g_param_spec_boxed ("stats", "Statistics",
       "SRT Statistics", GST_TYPE_STRUCTURE,
       G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+
+  /* add by yango */
+  properties[PROP_STREAMID] =
+      g_param_spec_string ("streamid", "Stream ID",
+      "Stream ID for srt ", NULL,
+      G_PARAM_READWRITE | GST_PARAM_MUTABLE_READY | G_PARAM_STATIC_STRINGS);
 
   g_object_class_install_properties (gobject_class, PROP_LAST, properties);
 
