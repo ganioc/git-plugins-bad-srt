@@ -297,4 +297,6 @@ gst_srt_client_sink_init (GstSRTClientSink * self)
 {
   GstSRTClientSinkPrivate *priv = GST_SRT_CLIENT_SINK_GET_PRIVATE (self);
   priv->poll_timeout = SRT_DEFAULT_POLL_TIMEOUT;
+
+  priv->streamid = NULL;
 }
