@@ -123,6 +123,10 @@ gst_srt_client_sink_get_property (GObject * object,
       g_value_take_boxed (value, gst_srt_base_sink_get_stats (priv->sockaddr,
               priv->sock));
       break;
+/* add by yango */
+    case PROP_STREAMID:
+      g_value_set_string (value, priv->streamid);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
