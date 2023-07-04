@@ -154,6 +154,14 @@ gst_srt_client_sink_set_property (GObject * object,
     case PROP_RENDEZ_VOUS:
       priv->rendez_vous = g_value_get_boolean (value);
       break;
+/* add by yango */
+    case PROP_STREAMID:
+      // if(priv->streamid != NULL)
+      // {
+      //   g_free(priv->streamid);
+      // }
+      priv->streamid = g_value_dup_string (value);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
