@@ -88,7 +88,7 @@ gst_srt_client_connect_full (GstElement * elem, int sender,
   srt_setsockopt (sock, 0, SRTO_RENDEZVOUS, &rendez_vous, sizeof (int));
 
   /* add by yango */
-  srt_setsockopt (sock, 0, SRTO_STREAMID, "live/live1", 10);
+  // srt_setsockopt (sock, 0, SRTO_STREAMID, "live/live1", 10);
 
   if (passphrase != NULL && passphrase[0] != '\0') {
     srt_setsockopt (sock, 0, SRTO_PASSPHRASE, passphrase, strlen (passphrase));
