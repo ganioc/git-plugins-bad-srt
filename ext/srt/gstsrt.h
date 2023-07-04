@@ -47,7 +47,8 @@ gst_srt_client_connect_full (GstElement * elem, int sender,
     const gchar * host, guint16 port, int rendez_vous,
     const gchar * bind_address, guint16 bind_port, int latency,
     GSocketAddress ** socket_address, gint * poll_id,
-    gchar * passphrase, int key_length);
+    gchar * passphrase, int key_length,
+    gchar * streamid, int streamid_len);
 
 G_END_DECLS
 

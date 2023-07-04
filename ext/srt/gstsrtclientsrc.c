@@ -241,7 +241,8 @@ gst_srt_client_src_start (GstBaseSrc * src)
   priv->sock = gst_srt_client_connect_full (GST_ELEMENT (src), FALSE,
       gst_uri_get_host (uri), gst_uri_get_port (uri), priv->rendez_vous,
       priv->bind_address, priv->bind_port, base->latency,
-      &socket_address, &priv->poll_id, base->passphrase, base->key_length);
+      &socket_address, &priv->poll_id, base->passphrase, base->key_length,
+      NULL, 0);
 
   g_clear_object (&socket_address);
   g_clear_pointer (&uri, gst_uri_unref);

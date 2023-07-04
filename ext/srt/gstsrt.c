@@ -38,7 +38,7 @@ gst_srt_client_connect_full (GstElement * elem, int sender,
     int rendez_vous, const gchar * bind_address,
     guint16 bind_port, int latency,
     GSocketAddress ** socket_address, gint * poll_id,
-    gchar * passphrase, int key_length)
+    gchar * passphrase, int key_length, gchar * streamid, int streamid_len)
 {
   SRTSOCKET sock = SRT_INVALID_SOCK;
   GError *error = NULL;
@@ -88,6 +88,9 @@ gst_srt_client_connect_full (GstElement * elem, int sender,
   srt_setsockopt (sock, 0, SRTO_RENDEZVOUS, &rendez_vous, sizeof (int));
 
   /* add by yango */
+  if (streamid_len > 0) {
+    srt_setsockopt (sock, 0, SRTO_STREAMID, streamid, streamid_len);
+  }
   // srt_setsockopt (sock, 0, SRTO_STREAMID, "live/live1", 10);
 
   if (passphrase != NULL && passphrase[0] != '\0') {
@@ -181,7 +184,7 @@ gst_srt_client_connect (GstElement * elem, int sender,
 {
   return gst_srt_client_connect_full (elem, sender, host, port,
       rendez_vous, bind_address, bind_port,
-      latency, socket_address, poll_id, NULL, 0);
+      latency, socket_address, poll_id, NULL, 0, NULL, 0);
 }
 
 static gboolean
